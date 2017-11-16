@@ -96,16 +96,41 @@ A.  One solution is to represent the cache as a **WeakHashMap** , where the entr
 
   *If we implement an API where clients register callbacks but don't deregister them explicitly, they will accumulate unless you take
   some action. The best way to ensure that callbacks are garbage collected promptly is to store only weak references to them, for 
-  instance, by storing them only as keys in a **WeakHashMap** . *
+  instance, by storing them only as keys in a **WeakHashMap** .*
   
   > Memory leaks can be discovered by the careful inspection of the code or by using the debuggint tools like **heap profiler** .
   
   
     
     
+**Avoid Finalizers**
+
+1. Finalizers are unpredictable, oftern dangerous, and generally unnecessary.
+
+2. One shortcoming of finalizers is that there is no gaurantee they'll be executed promptly. It can take arbitrarily long between the
+   time that an object becomes unreachable and that the time the finalizer is executed. So **never to anything time-critical in a 
+   finalizer**. Unfortunately, if the finalizer thread was running at a lower priority than the other application thereads, then the
+   objects will not get finalized at the rate they became eligible for finalization.
+   
+3. The promptness with which finalizers are executed is primarily a function of the garbage collection algorithm, which varies widely 
+   from JVM implementation to JVM implementation. So it is possible that a program will run perfectly on the JVM which we have tested
+   but fail miserably on the other JVM.
+   
+  > Never depend on a finalizer to update critical persistent state ( Eg.: Releasing a persistent lok on a shared resource such as DB)
+  
+4. Don't believe the methods *System.gc* and *System.runFinalization*. They may increase the odds of finalizers getting executed and 
+   they don't gaurantee it. The only methods that claim to gaurantee finalization are **System.runFinalizersOnExit** and it's evil
+   twin **Runtime.runFinalizersOnExit**.( But these are deprecated)
     
-    
-    
+5. An uncaught exception will terminate the thread and print a stack trace, but not if it occurs in a finalizer. It won't even print a
+   warning.
+   
+6. So, What should do instead of using finalizers?
+   Provide an explicit termination method, and require client of the class to invoke this method on each instance when it is no longer
+   needed. Invoking explicit termination method inside the finally clause ensures that it will get executed even if an exception is 
+   thrown while the object is being used.
+   
+7. 
     
     
     
