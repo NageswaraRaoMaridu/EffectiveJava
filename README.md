@@ -55,4 +55,65 @@ Exploring the concepts of java in-depth.
 
 1. An object can always be re-used if it is immutable.
 
-2. 
+2. In addition to reusing the immutable objects, we can also reuse the mutable objects if we know that they won't be modified.
+    Ex: Date object.
+        
+3. Keep an eye on the expensive objects in the program.
+
+4. Prefer primitives to boxed primitives, and watch out for unintentional autoboxing.
+
+5. Creating additional objects to enhance the clarity, simplicity, or power of a program is generally a good thing.
+
+6. Avoiding object creation by maintaining our own object pool is bad idea unless the objects in the pool are extremely heavyweight.
+   Ex: database connection
+
+**Eliminate obsolete object references**
+
+1. *What is obsolete reference?*
+A. An obsolte reference is simply a reference that will never be dereferenced again.
+
+2. *What is the problem with obsolete reference?*
+A. An obsolte reference causes memory leak. It can cause disk paging and even program failure with in OutOfMemeoryError.
+
+3. *How to avoid obsolte references?*
+A. Nullinig out object references will make them available to garbage collector. But if they are subsequently referenced by the other
+   objects in the program the program will fail with a NullPointerException. The best way to eliminate an obsolete references is to let    the variable that contained the reference fall out of scope. This occurs naturally if we define each variable in the narrowest 
+   possible scope.
+   
+> Another common source of memory leaks is cache. Once we put an object reference into cache, we may forget that it's there and leave it
+  in the cache long after it become irrelevant.
+ 
+4. *How can we avoid memory leaks through cache?*
+A.  One solution is to represent the cache as a **WeakHashMap** , where the entries will be removed automatically after they become 
+    Obsolete. But remember that WeakHashMap is useful only if the desired lifetime of cache entries is determined by external references
+    to the key, not the value.
+    
+    **LinkedHashMap** provides the facility to remove the entries that have fallen into disuse with its **removeEldestEntry** method.
+    
+    Take a look at *java.lang.ref* for more sophisticated caches.
+
+> A third common source of memory leaks is listeners and other callbacks.
+
+  *If we implement an API where clients register callbacks but don't deregister them explicitly, they will accumulate unless you take
+  some action. The best way to ensure that callbacks are garbage collected promptly is to store only weak references to them, for 
+  instance, by storing them only as keys in a **WeakHashMap** . *
+  
+  > Memory leaks can be discovered by the careful inspection of the code or by using the debuggint tools like **heap profiler** .
+  
+  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
