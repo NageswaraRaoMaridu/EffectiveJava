@@ -5,4 +5,4 @@ Generic methods allow type parameters to be used to express dependencies among t
 2. What is raw type?  
 When a generic type like Collection is used without type parameter, it's called a raw type.
   
-Note: Generics are implemented by the Java compiler as a front-end conversion called 'erasure'. We can think of this as a source-to-source translation. Erasure gets rid of(or erases) the generic type information. All the type information between the 
+Note: Generics are implemented by the Java compiler as a front-end conversion called 'erasure'. We can think of this as a source-to-source translation. Erasure gets rid of(or erases) the generic type information. All the type information between the angle brackets is thrown out.
